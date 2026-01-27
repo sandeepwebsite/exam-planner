@@ -1,5 +1,5 @@
 /* ---------- VERSION & SETTINGS ---------- */
-const APP_VERSION = '1.0.3'; // Update this to match your new release
+const APP_VERSION = '1.2.3'; // Update this to match your new release
 document.getElementById("appVersion").textContent = `Version: ${APP_VERSION}`;
 
 const syllabus = {
