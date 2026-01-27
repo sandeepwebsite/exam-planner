@@ -1,5 +1,5 @@
 /* ---------- VERSION & SETTINGS ---------- */
-const APP_VERSION = '1.0.4'; // Update this to match your new release
+const APP_VERSION = '1.0.5'; // Update this to match your new release
 document.getElementById("appVersion").textContent = `Version: ${APP_VERSION}`;
 
 const syllabus = {
@@ -8,7 +8,50 @@ const syllabus = {
     "Data Interpretation": ["Tables", "Bar Graphs", "Pie Charts", "Line Graphs", "Data Sufficiency"],
     "Computer": ["MS Office (Word, Excel, PPT)", "OS & Software Basics", "Internet & Networking", "Keyboard Shortcuts"],
     "Current Affairs": ["October CA", "November CA", "December CA", "January CA"],
-    "Odisha GK": ["Odisha History", "Odisha Geography", "Odisha Polity", "Odisha Economy", "Odisha Static GK"]
+    "Odisha History": [
+    "Ancient History of Odisha",
+    "Medieval History of Odisha",
+    "Modern History of Odisha",
+    "Freedom Struggle in Odisha"
+  ],
+  "Odisha Geography": [
+    "Geographical Features of Odisha",
+    "Climate of Odisha",
+    "Soils of Odisha",
+    "Drainage System of Odisha",
+    "Agriculture and Irrigation in Odisha",
+    "Animal Husbandry and Fishery in Odisha",
+    "Forests of Odisha",
+    "National Parks and Wildlife Sanctuaries in Odisha",
+    "Caste and Tribes of Odisha",
+    "Demographic Profile of Odisha"
+  ],
+  "Odisha Economy": [
+    "Mineral Resources of Odisha",
+    "Industries of Odisha",
+    "Energy Sector of Odisha",
+    "Transport in Odisha",
+    "Communication and Cinema in Odisha",
+    "Tourism in Odisha",
+    "Education and Health in Odisha",
+    "Social Welfare Schemes of Odisha"
+  ],
+  "Odisha Polity": [
+    "Formation of Odisha",
+    "Administrative Set-up of Odisha",
+    "Odisha Judiciary",
+    "Local Self-Government and Panchayati Raj in Odisha",
+    "District Profile of Odisha"
+  ],
+  "Odisha Static GK": [
+    "Language and Literature of Odisha",
+    "Folk Art, Craft and Culture of Odisha",
+    "Music and Dance of Odisha",
+    "Fairs, Festivals and Cuisines of Odisha",
+    "Sports in Odisha",
+    "Awards and Honours of Odisha",
+    "Historical and Other Famous Personalities of Odisha"
+  ]
 };
 
 let data = JSON.parse(localStorage.getItem("syllabus")) || {};
