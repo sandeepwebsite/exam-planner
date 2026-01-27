@@ -306,28 +306,34 @@ function renderTodayPlan(){
 setInterval(renderTodayPlan, 60000); // refresh active row highlight every minute
 
 
-function render(){
-  renderTodayPlan();
-  updateOverallSummary();
-  const s = subjectSelect.value;
-  if(!data[s]) return;
+function render() {
+    renderTodayPlan();
+    updateOverallSummary();
+    
+    const s = subjectSelect.value;
+    const chapterList = document.getElementById("chapterList");
+    if (!chapterList) return;
+    chapterList.innerHTML = "";
 
-  const chapterList = document.getElementById("chapterList");
-  chapterList.innerHTML="";
-  let p=0,c=0;
+    if (data[s]) {
+        data[s].forEach((ch, i) => {
+            // Determine which class to use based on completion status
+            const statusClass = ch.done ? 'btn-status-completed' : 'btn-status-pending';
+            const statusText = ch.done ? '✔ Completed' : '⏳ Pending';
 
-  data[s].forEach((ch,i)=>{
-    ch.done ? c++ : p++;
-    chapterList.innerHTML += `
-      <div class="chapter">
-        <div class="row"><b>${i+1}. ${ch.name}</b><small>Rev: ${ch.rev}</small></div>
-        <div class="row">
-          <button onclick="incRevision(${i})">🔁 Rev +</button>
-          <button onclick="toggleChapter(${i})">${ch.done ? "Completed" : "Pending"}</button>
-        </div>
-      </div>
-    `;
-  });
+            chapterList.innerHTML += `
+                <div class="chapter">
+                    <div class="row"><b>${ch.name}</b><small>Rev: ${ch.rev}</small></div>
+                    <div class="row">
+                        <button onclick="incRevision('${s}', ${i})">🔁 Rev +</button>
+                        <button onclick="toggleChapter('${s}', ${i})" class="${statusClass}">
+                            ${statusText}
+                        </button>
+                    </div>
+                </div>`;
+        });
+    }
+}
 
   document.getElementById("pCount").textContent = p;
   document.getElementById("cCount").textContent = c;
