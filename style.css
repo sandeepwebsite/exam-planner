@@ -414,5 +414,11 @@ input[type="checkbox"]:checked {
   font-weight: 800;
   color: var(--accent);
 }
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  filter: grayscale(40%);
+}
+
 
 
