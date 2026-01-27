@@ -397,7 +397,7 @@ function startStudy(){
 }
 
 function takeBreak(){
-  if(!studyStart) return;
+  if (!studyStart) return;
 
   totalStudyMs += Date.now() - studyStart;
   studyStart = null;
@@ -405,11 +405,16 @@ function takeBreak(){
   localStorage.totalStudyMs = totalStudyMs;
   localStorage.studyStart = "";
 
-  document.getElementById("studyStatus").textContent = "Paused";
-  document.getElementById("studyStatus").style.color = "var(--pending)";
+  const s = document.getElementById("studyStatus");
+  if (s) {
+    s.textContent = "Paused";
+    s.style.color = "var(--pending)";
+  }
 
   updateStudyTimeUI();
+  updateStudyButtons();
 }
+
 
 function updateStudyTimeUI(){
   let ms = totalStudyMs;
@@ -507,13 +512,11 @@ function restoreStudyState(){
   const status = document.getElementById("studyStatus");
 
   if (studyStart) {
-    // Study was running before refresh
     if (status) {
       status.textContent = "Studying";
       status.style.color = "var(--done)";
     }
   } else {
-    // Study paused
     if (status) {
       status.textContent = "Paused";
       status.style.color = "var(--pending)";
@@ -521,7 +524,27 @@ function restoreStudyState(){
   }
 
   updateStudyTimeUI();
+  updateStudyButtons();
 }
+
+function updateStudyButtons(){
+  const startBtn = document.getElementById("startBtn");
+  const breakBtn = document.getElementById("breakBtn");
+
+  if (!startBtn || !breakBtn) return;
+
+  if (studyStart) {
+    // Studying mode
+    startBtn.disabled = true;
+    breakBtn.disabled = false;
+  } else {
+    // Paused mode
+    startBtn.disabled = false;
+    breakBtn.disabled = true;
+  }
+}
+
+
 restoreStudyState();
 
 
