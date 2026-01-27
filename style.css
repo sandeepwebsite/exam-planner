@@ -263,3 +263,21 @@ input[type="checkbox"] {
   white-space: nowrap; /* Prevents text from wrapping */
 }
 
+/* Color for the Status Button in Subject List */
+.btn-status-pending {
+    background: rgba(249, 115, 22, 0.2) !important; /* Soft Orange */
+    color: #f97316 !important;
+    border: 1px solid #f97316 !important;
+}
+
+.btn-status-completed {
+    background: rgba(34, 197, 94, 0.2) !important; /* Soft Green */
+    color: #22c55e !important;
+    border: 1px solid #22c55e !important;
+}
+
+/* Ensure the Today Schedule checkboxes are visible */
+input[type="checkbox"]:checked {
+    accent-color: var(--done);
+}
+
