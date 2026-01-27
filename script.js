@@ -1,6 +1,8 @@
 /* ---------- VERSION & SETTINGS ---------- */
+import './version.js';
+
 document.getElementById('appVersion').textContent =
-  `Version: ${new Date().toLocaleString()}`;
+  `Version: ${APP_VERSION}`;
 
 
 
@@ -114,6 +116,93 @@ setInterval(() => {
     countdown.textContent = d <= 0 ? "🎉 Exam Day" : `⏳ ${d} Days Left`;
     countdown.className = "countdown" + (d <= 7 ? " danger" : "");
 }, 1000);
+
+
+
+// ----- Completed and Pending Modal ----- //
+
+function showCompletedModal() {
+    const modal = document.getElementById("pendingModal");
+    const list = document.getElementById("modalList");
+    const title = document.getElementById("modalTitle");
+
+    // Check if elements exist before using them to prevent the "null" error
+    if (!modal || !list || !title) {
+        console.error("Modal elements missing in HTML!");
+        return;
+    }
+
+    title.innerText = "✅ Completed Chapters";
+    title.style.color = "var(--done)";
+    list.innerHTML = ""; 
+
+    let foundAny = false;
+    Object.keys(data).forEach(sub => {
+        const completedInSub = data[sub].filter(ch => ch.done);
+        if (completedInSub.length > 0) {
+            foundAny = true;
+            list.innerHTML += `<h3 style="color:var(--text-dim); margin-top:15px; font-size:0.9rem; border-left: 3px solid var(--done); padding-left: 8px;">${sub}</h3>`;
+            completedInSub.forEach(ch => {
+                list.innerHTML += `
+                    <div class="pending-item">
+                        <span>${ch.name}</span>
+                        <b style="color:var(--done)">Rev: ${ch.rev}</b>
+                    </div>`;
+            });
+        }
+    });
+
+    if (!foundAny) list.innerHTML = "<p style='text-align:center; padding:20px;'>No chapters completed yet.</p>";
+    modal.style.display = "block";
+}
+
+function showPendingModal() {
+    const modal = document.getElementById("pendingModal");
+    const list = document.getElementById("modalList");
+    const title = document.getElementById("modalTitle");
+
+    if (!modal || !list || !title) return;
+
+    title.innerText = "📚 All Pending Chapters";
+    title.style.color = "var(--pending)";
+    list.innerHTML = ""; 
+
+    let foundAny = false;
+    Object.keys(data).forEach(sub => {
+        const pendingInSub = data[sub].filter(ch => !ch.done);
+        if (pendingInSub.length > 0) {
+            foundAny = true;
+            list.innerHTML += `<h3 style="color:var(--text-dim); margin-top:15px; font-size:0.9rem; border-left: 3px solid var(--pending); padding-left: 8px;">${sub}</h3>`;
+            pendingInSub.forEach(ch => {
+                list.innerHTML += `
+                    <div class="pending-item">
+                        <span>${ch.name}</span>
+                        <b style="color:var(--accent)">Rev: ${ch.rev}</b>
+                    </div>`;
+            });
+        }
+    });
+
+    if (!foundAny) list.innerHTML = "<p style='text-align:center; padding:20px;'>🎉 All chapters completed!</p>";
+    modal.style.display = "block";
+}
+
+
+/* --- Close Modal Controls --- */
+function closeModal() {
+    const modal = document.getElementById("pendingModal");
+    if (modal) {
+        modal.style.display = "none";
+    }
+}
+
+// Also, add this to allow clicking outside the box to close it
+window.onclick = function(event) {
+    const modal = document.getElementById("pendingModal");
+    if (event.target === modal) {
+        modal.style.display = "none";
+    }
+}
 
 /* ---------- SYNC LOGIC (The Fix) ---------- */
 
@@ -284,20 +373,15 @@ function updateOverallSummary() {
 
 /* ---------- SERVICE WORKER AUTO-UPDATE ---------- */
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').then(reg => {
-      // Check if a new service worker is waiting to take over
-      reg.addEventListener('updatefound', () => {
-        const newWorker = reg.installing;
-        newWorker.addEventListener('statechange', () => {
-          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-            // New version is ready! Auto-refresh
-            console.log("New version detected. Auto-refreshing...");
-            window.location.reload();
-          }
-        });
-      });
+  window.addEventListener('load', async () => {
+    const reg = await navigator.serviceWorker.register('./sw.js');
+
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      console.log('New version activated. Reloading...');
+      window.location.reload();
     });
+
+    reg.update();
   });
 }
 
