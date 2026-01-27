@@ -59,6 +59,7 @@ h1 {
 /* ---------- SUMMARY ROW ---------- */
 .summary-row {
   display: flex;
+  justify-content: center; /* center the spans horizontally */
   align-items: center;
   gap: 10px;
   margin-bottom: 15px;
@@ -66,11 +67,12 @@ h1 {
 }
 
 .summary-row span {
-  padding: 4px 8px;
-  border-radius: 4px;
+  padding: 6px 12px;
+  border-radius: 6px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
+  border: 1px solid;
 }
 
 .summary-row span:hover {
@@ -78,29 +80,42 @@ h1 {
   opacity: 0.85;
 }
 
+/* Specific colors */
+#overallCompleted {
+  color: var(--done);
+  border-color: var(--done);
+}
+
+#overallPending {
+  color: var(--pending);
+  border-color: var(--pending);
+}
+
 /* ---------- MODAL ---------- */
 .modal {
   display: none; /* Hidden by default */
   position: fixed;
-  z-index: 999;
+  z-index: 9999;
   left: 0;
   top: 0;
   width: 100%;
   height: 100%;
-  overflow: auto; /* Enable scroll if content is large */
-  background-color: rgba(0, 0, 0, 0.5); /* Black overlay */
-  transition: opacity 0.3s ease;
+  background-color: rgba(0, 0, 0, 0.5); /* Overlay */
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: center;     /* Center vertically */
+  padding: 10px; /* For small screens */
 }
 
 .modal-content {
   background-color: var(--bg, #fff);
-  margin: 60px auto;
-  padding: 20px;
-  border-radius: 10px;
-  width: 90%;
+  border-radius: 12px;
+  width: 100%;
   max-width: 500px;
-  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+  padding: 20px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
   animation: slideDown 0.3s ease;
+  position: relative;
 }
 
 /* Modal header */
@@ -132,7 +147,7 @@ h1 {
 
 /* Modal body */
 .modal-body {
-  max-height: 300px;
+  max-height: 350px;
   overflow-y: auto;
 }
 
@@ -147,6 +162,8 @@ h1 {
   margin: 10px 0 5px;
   font-size: 0.95rem;
   font-weight: 500;
+  border-left: 3px solid currentColor;
+  padding-left: 8px;
 }
 
 /* Animation */
@@ -173,19 +190,15 @@ h1 {
 @media (max-width: 500px) {
   .modal-content {
     width: 95%;
-    margin: 40px auto;
     padding: 15px;
-  }
-
-  .summary-row {
-    gap: 5px;
   }
 
   .summary-row span {
     font-size: 12px;
-    padding: 3px 6px;
+    padding: 4px 8px;
   }
 }
+
 
 
 /* --- INPUTS & CALENDAR --- */
