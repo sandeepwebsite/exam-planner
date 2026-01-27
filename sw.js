@@ -5,8 +5,8 @@ const ASSETS = [
   './index.html',
   './manifest.json',
   './sw.js',
-  './logo-192.png',
-  './logo-512.png',
+  './logo.png',
+  './logo.png',
   './style.css', // add your CSS
   './script.js' // add your JS
 ];
