@@ -3,6 +3,10 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#38bdf8">
+<link rel="apple-touch-icon" href="icon-192.png">
+
 <title>OSSC CGL Study Planner</title>
 
 <style>
@@ -213,6 +217,10 @@ th{background:#020617}
 <div id="chapterList"></div>
 
 <script>
+
+  const APP_VERSION = '1.0.0'; // Update this when releasing new version
+document.getElementById("appVersion").textContent = `Version: ${APP_VERSION}`;
+
 /* ---------- DATA ---------- */
 const syllabus = {
   "Arithmetic": [
@@ -612,5 +620,25 @@ render();
 setInterval(checkDailyWarning, 60000); // check every minute
 </script>
 
+  <script>
+if('serviceWorker' in navigator){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('sw.js').then(reg => {
+  reg.onupdatefound = () => {
+    const newWorker = reg.installing;
+    newWorker.onstatechange = () => {
+      if(newWorker.state === 'installed'){
+        if(navigator.serviceWorker.controller){
+          alert("🔔 New version available! Refresh to update.");
+        }
+      }
+    }
+  };
+});
+}
+</script>
+
+
 </body>
 </html>
+
