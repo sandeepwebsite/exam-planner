@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cgl-planner-v1'; // Increment version to auto update
+const APP_VERSION = '1.0.0'; // Update this when releasing new version
 const ASSETS = [
   './index.html',
   './manifest.json',
