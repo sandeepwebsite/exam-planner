@@ -226,7 +226,7 @@ td:last-child { border-radius: 0 12px 12px 0; }
 @media (max-width: 480px) {
   body { padding: 12px; }
   .card { padding: 15px; }
-  .chapter .row { flex-direction: column; }
+  .chapter .row { flex-direction: row; }
   .chapter button { width: 100%; }
   th, td { font-size: 0.75rem; padding: 8px 4px; }
 }
