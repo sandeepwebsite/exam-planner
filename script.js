@@ -502,6 +502,29 @@ function handleMidnightRollover(){
     renderStudySlider();
   }
 }
+
+function restoreStudyState(){
+  const status = document.getElementById("studyStatus");
+
+  if (studyStart) {
+    // Study was running before refresh
+    if (status) {
+      status.textContent = "Studying";
+      status.style.color = "var(--done)";
+    }
+  } else {
+    // Study paused
+    if (status) {
+      status.textContent = "Paused";
+      status.style.color = "var(--pending)";
+    }
+  }
+
+  updateStudyTimeUI();
+}
+restoreStudyState();
+
+
 setInterval(handleMidnightRollover, 60000);
 
 
