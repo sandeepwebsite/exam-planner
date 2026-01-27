@@ -389,12 +389,15 @@ if ('serviceWorker' in navigator) {
 subjectSelect.onchange = render;
 generateTodayPlan();
 render();
-// Expose module functions to global scope so inline onclick works
-window.toggleChapter = toggleChapter;
-window.incRevision = incRevision;
-window.completeToday = completeToday;
+// Expose module functions globally so inline onclick works
+window.resetProgress = resetProgress;
 window.showPendingModal = showPendingModal;
 window.showCompletedModal = showCompletedModal;
 window.closeModal = closeModal;
+window.toggleChapter = toggleChapter;
+window.incRevision = incRevision;
+window.completeToday = completeToday;
+window.addChapter = addChapter;
+
 
 
