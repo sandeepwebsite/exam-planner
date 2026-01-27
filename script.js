@@ -504,6 +504,8 @@ window.toggleChapter = toggleChapter;
 window.incRevision = incRevision;
 window.completeToday = completeToday;
 window.addChapter = addChapter;
+window.startStudy = startStudy;
+window.takeBreak = takeBreak;
 
 
 
