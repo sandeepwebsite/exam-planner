@@ -1,5 +1,5 @@
 /* ---------- VERSION & SETTINGS ---------- */
-const APP_VERSION = '1.0.2'; // Change this to trigger update
+const APP_VERSION = '1.0.3'; // Update this to match your new release
 document.getElementById("appVersion").textContent = `Version: ${APP_VERSION}`;
 
 const syllabus = {
@@ -201,20 +201,21 @@ function updateOverallSummary() {
 
 /* ---------- SERVICE WORKER AUTO-UPDATE ---------- */
 if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('./sw.js').then(reg => {
-            reg.onupdatefound = () => {
-                const newWorker = reg.installing;
-                newWorker.onstatechange = () => {
-                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                        if (confirm("New Version Available! Update Now?")) {
-                            location.reload();
-                        }
-                    }
-                };
-            };
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').then(reg => {
+      // Check if a new service worker is waiting to take over
+      reg.addEventListener('updatefound', () => {
+        const newWorker = reg.installing;
+        newWorker.addEventListener('statechange', () => {
+          if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+            // New version is ready! Auto-refresh
+            console.log("New version detected. Auto-refreshing...");
+            window.location.reload();
+          }
         });
+      });
     });
+  });
 }
 
 // Initial calls
