@@ -24,6 +24,22 @@
 <div id="countdown" class="countdown"></div>
 </div>
 
+<!-- Today Study Time -->
+<div class="card summary-box">
+  <h3>⏱️ Today Study Time</h3>
+
+  <div class="summary-row">
+    <span id="studyTime">0h 0m</span>
+    <span id="studyStatus" style="color:var(--pending)">Paused</span>
+  </div>
+
+  <div style="display:flex; gap:10px; margin-top:12px;">
+    <button onclick="startStudy()">▶ Start Study</button>
+    <button onclick="takeBreak()" class="btn-status-pending">⏸ Break</button>
+  </div>
+</div>
+
+
 <!-- OVERALL SUMMARY -->
 <div id="overallSummary" class="summary-box">
   <h3>📚 Overall Progress</h3>
@@ -112,6 +128,7 @@
   <script type="module" src="./script.js"></script>
 </body>
 </html>
+
 
 
 
