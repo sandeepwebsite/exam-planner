@@ -74,6 +74,72 @@ h1 {
   color: var(--text-main);
 }
 
+/*  Pending and completed Modal  */
+
+/* Modal Background Overlay */
+.modal {
+  display: none; 
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.8);
+  backdrop-filter: blur(5px);
+}
+
+/* Modal Box */
+.modal-content {
+  margin: 10% auto;
+  width: 90%;
+  max-width: 500px;
+  max-height: 70vh;
+  overflow-y: auto;
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from { transform: translateY(-50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--card-border);
+  margin-bottom: 15px;
+}
+
+.close-modal {
+  font-size: 1rem;
+  cursor: pointer;
+  color: var(--text-dim);
+}
+
+.pending-item {
+  padding: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
+  display: flex;
+  justify-content: space-between;
+}
+
+.pending-item b { color: var(--accent); }
+
+/* Custom Scrollbar for Modal */
+.modal-content::-webkit-scrollbar {
+  width: 6px;
+}
+.modal-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+.modal-content::-webkit-scrollbar-thumb {
+  background: var(--card-border);
+  border-radius: 10px;
+}
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: var(--text-dim);
+}
+
 /* --- INPUTS & CALENDAR --- */
 label {
   display: block;
