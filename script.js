@@ -1,10 +1,7 @@
 /* ---------- VERSION & SETTINGS ---------- */
-fetch('./version.json')
-  .then(r => r.json())
-  .then(v => {
-    document.getElementById('appVersion').textContent =
-      `Version: ${v.version}`;
-  });
+document.getElementById('appVersion').textContent =
+  `Version: ${new Date().toLocaleString()}`;
+
 
 
 const syllabus = {
