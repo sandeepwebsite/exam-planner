@@ -400,24 +400,23 @@ render();
 setInterval(checkDailyWarning, 60000); // check every minute
 
 // -----code for SW.JS------ //
-if('serviceWorker' in navigator){
+/* ---------- SERVICE WORKER REGISTRATION ---------- */
+if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('sw.js').then(reg => {
-  reg.onupdatefound = () => {
-    const newWorker = reg.installing;
-    newWorker.onstatechange = () => {
-      if(newWorker.state === 'installed'){
-        if(navigator.serviceWorker.controller){
-          alert("🔔 New version available! Refresh to update.");
-        }
-      }
-    }
-  };
-});
+      reg.onupdatefound = () => {
+        const newWorker = reg.installing;
+        newWorker.onstatechange = () => {
+          if (newWorker.state === 'installed') {
+            if (navigator.serviceWorker.controller) {
+              alert("🔔 New version available! Refresh to update.");
+            }
+          }
+        };
+      };
+    }).catch(err => console.log("SW registration failed:", err));
+  }); // Added missing closing ) for addEventListener
 }
-
-
-)
 
 
 
