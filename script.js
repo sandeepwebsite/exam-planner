@@ -1,5 +1,3 @@
-<script>
-
 const APP_VERSION = '1.0.0'; // Update this when releasing new version
 document.getElementById("appVersion").textContent = `Version: ${APP_VERSION}`;
 
@@ -400,9 +398,8 @@ checkDailyWarning();
 render();
 
 setInterval(checkDailyWarning, 60000); // check every minute
-</script>
 
-  <script>
+// -----code for SW.JS------ //
 if('serviceWorker' in navigator){
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('sw.js').then(reg => {
@@ -418,7 +415,6 @@ if('serviceWorker' in navigator){
   };
 });
 }
-</script>
 
 
 
