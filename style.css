@@ -101,112 +101,70 @@ h1 {
   border-color: var(--pending);
 }
 
-/* ---------- MODAL ---------- */
+/*  Pending and completed Modal  */
+
+/* Modal Background Overlay */
 .modal {
-  display: none; /* Hidden by default */
+  display: none; 
   position: fixed;
-  z-index: 9999;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* Overlay */
-  display: flex;
-  justify-content: center; /* Center horizontally */
-  align-items: center;     /* Center vertically */
-  padding: 10px; /* For small screens */
+  z-index: 1000;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0,0,0,0.8);
+  backdrop-filter: blur(5px);
 }
 
+/* Modal Box */
 .modal-content {
-  background-color: var(--bg, #fff);
-  border-radius: 12px;
-  width: 100%;
+  margin: 10% auto;
+  width: 90%;
   max-width: 500px;
-  padding: 20px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
-  animation: slideDown 0.3s ease;
-  position: relative;
+  max-height: 70vh;
+  overflow-y: auto;
+  animation: slideDown 0.3s ease-out;
 }
 
-/* Modal header */
+@keyframes slideDown {
+  from { transform: translateY(-50px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
 .modal-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
-}
-
-.modal-header h2 {
-  font-size: 1.2rem;
-  margin: 0;
-  font-weight: 600;
+  border-bottom: 1px solid var(--card-border);
+  margin-bottom: 15px;
 }
 
 .close-modal {
-  font-size: 1.4rem;
-  font-weight: bold;
+  font-size: 1rem;
   cursor: pointer;
-  padding: 2px 8px;
-  border-radius: 50%;
-  transition: background 0.2s ease;
+  color: var(--text-dim);
 }
 
-.close-modal:hover {
-  background-color: #f0f0f0;
-}
-
-/* Modal body */
-.modal-body {
-  max-height: 350px;
-  overflow-y: auto;
-}
-
-.modal-body .pending-item {
+.pending-item {
+  padding: 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.05);
   display: flex;
   justify-content: space-between;
-  padding: 6px 0;
-  border-bottom: 1px solid #eee;
 }
 
-.modal-body h3 {
-  margin: 10px 0 5px;
-  font-size: 0.95rem;
-  font-weight: 500;
-  border-left: 3px solid currentColor;
-  padding-left: 8px;
-}
+.pending-item b { color: var(--accent); }
 
-/* Animation */
-@keyframes slideDown {
-  0% { transform: translateY(-20px); opacity: 0; }
-  100% { transform: translateY(0); opacity: 1; }
-}
-
-/* Scrollbar for modal body */
-.modal-body::-webkit-scrollbar {
+/* Custom Scrollbar for Modal */
+.modal-content::-webkit-scrollbar {
   width: 6px;
 }
-
-.modal-body::-webkit-scrollbar-thumb {
-  background-color: rgba(100, 100, 100, 0.3);
-  border-radius: 3px;
+.modal-content::-webkit-scrollbar-track {
+  background: transparent;
 }
-
-.modal-body::-webkit-scrollbar-track {
-  background-color: transparent;
+.modal-content::-webkit-scrollbar-thumb {
+  background: var(--card-border);
+  border-radius: 10px;
 }
-
-/* Responsive */
-@media (max-width: 500px) {
-  .modal-content {
-    width: 95%;
-    padding: 15px;
-  }
-
-  .summary-row span {
-    font-size: 12px;
-    padding: 4px 8px;
-  }
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: var(--text-dim);
 }
 
 
