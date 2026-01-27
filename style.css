@@ -1,125 +1,240 @@
-:root{
-  --bg:#0f172a; --card:#1e293b; --text:#e5e7eb;
-  --accent:#38bdf8; --done:#22c55e; --pending:#f97316; --danger:#ef4444;
-}
-*{box-sizing:border-box;font-family:system-ui}
-body{margin:0;background:var(--bg);color:var(--text);padding:15px}
-h1{text-align:center}
-
-.card{background:var(--card);padding:15px;border-radius:16px;margin-bottom:15px}
-
-.summary-box{
-  background:#0f172a;
-  border:1px solid #334155;
-  border-radius:12px;
-  padding:12px;
-  margin:15px 0;
-}
-
-.summary-row{
-  display:flex;
-  justify-content:space-between;
-  font-weight:600;
+/* --- SMOOTH MIDNIGHT THEME --- */
+:root {
+  /* Softened Palette */
+  --bg: #0f172a;               /* Deep Navy */
+  --card-bg: #1e293b;          /* Soft Slate */
+  --card-border: rgba(255, 255, 255, 0.08);
+  
+  /* Muted Accents (Gentle on eyes) */
+  --accent: #7dd3fc;           /* Muted Sky Blue */
+  --accent-glow: rgba(125, 211, 252, 0.15);
+  
+  /* Text colors (Off-white to reduce glare) */
+  --text-main: #e2e8f0; 
+  --text-dim: #94a3b8;
+  
+  /* Status Colors */
+  --done: #10b981;             /* Emerald */
+  --pending: #f59e0b;          /* Soft Amber */
+  --danger: #f43f5e;           /* Soft Rose */
 }
 
-.completed{
-  color:white;
+/* --- BASE STYLES --- */
+* {
+  box-sizing: border-box;
+  font-family: 'Inter', -apple-system, system-ui, sans-serif;
+  -webkit-tap-highlight-color: transparent;
 }
 
-.pending{
-  color:black;
+body {
+  margin: 0;
+  background-color: var(--bg);
+  background-image: radial-gradient(circle at top left, #1e293b, #0f172a);
+  background-attachment: fixed;
+  color: var(--text-main);
+  padding: 16px;
+  line-height: 1.5;
 }
 
-input,select,button{
- width:100%;padding:10px;border-radius:10px;border:none;margin-top:8px
-}
-button{background:var(--accent);font-weight:600;cursor:pointer}
-
-.stats{display:flex;gap:10px;margin-top:10px}
-.stat{flex:1;text-align:center;padding:8px;border-radius:10px;font-weight:700}
-.pending{background:var(--pending)}
-.completed{background:var(--done)}
-
-.countdown{text-align:center;font-weight:700}
-.danger{color:var(--danger)}
-
-table{
- width:100%;border-collapse:collapse;margin-top:10px;font-size:14px
-}
-th,td{
- border:1px solid #334155;padding:6px;text-align:center
-}
-th{background:#020617}
-
-.chapter{
- background:#020617;padding:10px;border-radius:12px;margin-top:10px
-}
-.row{display:flex;justify-content:space-between;align-items:center}
-
-.warning-box{
-  background:#7c2d12;
-  color:#fde68a;
-  padding:10px;
-  border-radius:10px;
-  margin-bottom:10px;
-  font-weight:600;
-  text-align:center;
+h1 {
+  text-align: center;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: var(--accent);
+  margin-top: 10px;
 }
 
-
-/* ---------- RESPONSIVE DESIGN ---------- */
-@media (max-width: 1200px) {
-  body {
-    padding: 10px;
-    font-size: 14px;
-  }
-  h1 {
-    font-size: 22px;
-  }
-  .card {
-    padding: 12px;
-  }
-  table th, table td {
-    padding: 4px;
-    font-size: 12px;
-  }
-  input, select, button {
-    padding: 8px;
-    font-size: 13px;
-  }
-  .stats .stat {
-    font-size: 12px;
-    padding: 6px;
-  }
+/* --- SMOOTH GLASS CARDS --- */
+.card {
+  background: var(--card-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  padding: 18px;
+  border-radius: 18px;
+  margin-bottom: 16px;
+  border: 1px solid var(--card-border);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
 }
 
-@media (max-width: 900px) {
-  body {
-    padding: 8px;
-  }
-  h1 {
-    font-size: 20px;
-  }
-  table {
-    font-size: 11px;
-  }
-  table th, table td {
-    padding: 3px;
-  }
-  .card {
-    padding: 10px;
-  }
-  input, select, button {
-    padding: 6px;
-    font-size: 12px;
-  }
-  .stats {
-    flex-direction: column;
-    gap: 5px;
-  }
-  .stats .stat {
-    width: 100%;
-    font-size: 12px;
-    padding: 6px;
-  }
+/* --- OVERALL PROGRESS BOX --- */
+.summary-box {
+  background: linear-gradient(145deg, #1e293b, #0f172a);
+  border: 1px solid var(--accent-glow);
+  padding: 20px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-main);
+}
+
+/* --- INPUTS & CALENDAR --- */
+label {
+  display: block;
+  margin-bottom: 8px;
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+input[type="date"], 
+input[type="text"], 
+select {
+  width: 100%;
+  padding: 12px;
+  border-radius: 12px;
+  border: 1px solid #334155;
+  background: #020617;
+  color: var(--text-main);
+  font-size: 1rem;
+  margin-top: 5px;
+  transition: all 0.3s ease;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+
+
+/* --- BUTTONS --- */
+button {
+  width: 100%;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid var(--accent);
+  margin-top: 12px;
+  background: var(--accent-glow);
+  color: var(--accent);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+button:active { transform: scale(0.97); }
+
+button:hover {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+/* Reset Button Style */
+button[onclick="resetProgress()"] {
+  background: rgba(244, 63, 94, 0.1);
+  border-color: var(--danger);
+  color: var(--danger);
+  margin-top: 20px;
+}
+
+/* --- TABLE STYLING --- */
+.table-container { overflow-x: auto; }
+
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 6px;
+  margin-top: 10px;
+}
+
+th {
+  color: var(--accent);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 0.7rem;
+  padding: 10px;
+  text-align: center;
+}
+
+td {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 12px 8px;
+  font-size: 0.85rem;
+  text-align: center;
+  border-top: 1px solid rgba(255, 255, 255, 0.02);
+}
+
+td:first-child { border-radius: 12px 0 0 12px; }
+td:last-child { border-radius: 0 12px 12px 0; }
+
+/* --- CHAPTER LIST --- */
+.chapter {
+  background: rgba(15, 23, 42, 0.6);
+  padding: 15px;
+  border-radius: 16px;
+  margin-top: 12px;
+  border: 1px solid var(--card-border);
+}
+
+.chapter b { color: var(--text-main); font-size: 0.95rem; }
+.chapter small { color: var(--accent); font-weight: bold; }
+
+.chapter .row {
+  display: flex;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.chapter button {
+  font-size: 0.75rem;
+  padding: 8px;
+  margin-top: 0;
+}
+
+/* --- STAT CHIPS --- */
+.stats { display: flex; gap: 10px; margin-top: 12px; }
+.stat {
+  flex: 1;
+  padding: 10px;
+  border-radius: 10px;
+  font-weight: 800;
+  font-size: 0.8rem;
+  text-align: center;
+  color: white;
+}
+
+.pending { background: var(--pending); box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2); }
+.completed { background: var(--done); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2); }
+
+/* --- UTILITIES --- */
+.countdown {
+  text-align: center;
+  font-weight: 700;
+  font-size: 1.1rem;
+  padding: 5px;
+}
+
+.danger { color: var(--danger); text-shadow: 0 0 10px rgba(244, 63, 94, 0.3); }
+
+#appVersion {
+  text-align: center;
+  font-size: 0.75rem;
+  opacity: 0.4;
+  margin: 20px 0;
+}
+
+/* --- MOBILE OPTIMIZATION --- */
+@media (max-width: 480px) {
+  body { padding: 12px; }
+  .card { padding: 15px; }
+  .chapter .row { flex-direction: column; }
+  .chapter button { width: 100%; }
+  th, td { font-size: 0.75rem; padding: 8px 4px; }
+}
+
+/* --- CHECKBOX CUSTOMIZATION --- */
+input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--done);
+  cursor: pointer;
 }
