@@ -333,7 +333,6 @@ function render() {
                 </div>`;
         });
     }
-}
 
   document.getElementById("pCount").textContent = p;
   document.getElementById("cCount").textContent = c;
