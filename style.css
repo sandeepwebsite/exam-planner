@@ -57,6 +57,7 @@ h1 {
 }
 
 /* ---------- SUMMARY ROW ---------- */
+/* --- OVERALL PROGRESS BOX --- */
 .summary-box {
   background: linear-gradient(145deg, #1e293b, #0f172a);
   border: 1px solid var(--accent-glow);
@@ -67,15 +68,14 @@ h1 {
   text-align: center;
 
 }
+
 .summary-row {
   display: flex;
-  justify-content: center; /* center the spans horizontally */
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 15px;
-  flex-wrap: wrap;
+  justify-content: space-between;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text-main);
 }
-
 .summary-row span {
   padding: 6px 12px;
   border-radius: 6px;
