@@ -1,4 +1,1 @@
-{
-  "version": "1.0.6",
-  "build": "a9f31c2"
-}
+self.APP_VERSION = '1.0.7';
