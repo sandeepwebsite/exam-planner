@@ -1,6 +1,5 @@
-importScripts('./version.json');
+const CACHE_NAME = `cgl-${self.registration.scope}-${Date.now()}`;
 
-const CACHE_NAME = `cgl-${version}-${build}`;
 
 const ASSETS = [
   './',
