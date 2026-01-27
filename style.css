@@ -376,3 +376,43 @@ input[type="checkbox"]:checked {
     accent-color: var(--done);
 }
 
+
+.study-slider {
+  display: flex;
+  gap: 12px;
+  overflow-x: auto;
+  padding: 10px 2px;
+  scroll-snap-type: x mandatory;
+}
+
+.study-slider::-webkit-scrollbar {
+  height: 6px;
+}
+.study-slider::-webkit-scrollbar-thumb {
+  background: var(--card-border);
+  border-radius: 10px;
+}
+
+.study-day {
+  min-width: 80px;
+  scroll-snap-align: start;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--card-border);
+  border-radius: 14px;
+  padding: 10px;
+  text-align: center;
+  font-size: 0.75rem;
+}
+
+.study-day.today {
+  border-color: var(--done);
+  box-shadow: 0 0 12px rgba(16,185,129,0.3);
+}
+
+.study-hours {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: var(--accent);
+}
+
+
