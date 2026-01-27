@@ -6,7 +6,6 @@ const ASSETS = [
   './manifest.json',
   './sw.js',
   './image/logo.png',
-  './image/logo.png',
   './style.css', // add your CSS
   './script.js' // add your JS
 ];
