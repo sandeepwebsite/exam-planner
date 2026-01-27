@@ -12,7 +12,6 @@ const syllabus = {
 };
 
 let data = JSON.parse(localStorage.getItem("syllabus")) || {};
-const subjectSelect = document.getElementById("subjectSelect");
 const timeSlots = [
     { start: "06:00", end: "07:00" }, { start: "07:15", end: "08:15" },
     { start: "08:30", end: "09:30" }, { start: "09:30", end: "10:30" },
