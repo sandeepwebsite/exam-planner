@@ -389,3 +389,7 @@ if ('serviceWorker' in navigator) {
 subjectSelect.onchange = render;
 generateTodayPlan();
 render();
+window.showPendingModal = showPendingModal;
+window.showCompletedModal = showCompletedModal;
+window.closeModal = closeModal;
+
