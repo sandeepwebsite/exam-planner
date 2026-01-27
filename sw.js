@@ -1,3 +1,5 @@
+importScripts('./version.js');
+
 const CACHE_NAME = `cgl-${self.registration.scope}-${Date.now()}`;
 
 
