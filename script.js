@@ -1,6 +1,11 @@
 /* ---------- VERSION & SETTINGS ---------- */
-const APP_VERSION = '1.0.5'; // Update this to match your new release
-document.getElementById("appVersion").textContent = `Version: ${APP_VERSION}`;
+fetch('./version.json')
+  .then(r => r.json())
+  .then(v => {
+    document.getElementById('appVersion').textContent =
+      `Version: ${v.version}`;
+  });
+
 
 const syllabus = {
     "Arithmetic": ["Number System", "Percentage", "Ratio & Proportion", "Profit & Loss", "Simple Interest", "Compound Interest", "Speed, Time & Distance", "Time & Work", "Averages", "Mensuration", "Partnership & Mixtures"],
