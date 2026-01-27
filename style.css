@@ -238,3 +238,28 @@ input[type="checkbox"] {
   accent-color: var(--done);
   cursor: pointer;
 }
+
+/* Container for the 70/30 split */
+.add-chapter-container {
+  display: flex;
+  gap: 10px; /* Space between input and button */
+  align-items: center;
+  margin-top: 10px;
+}
+
+/* Input gets 70% width */
+.add-chapter-container input {
+  flex: 7; /* This represents roughly 70% */
+  margin-top: 0; /* Override previous margins */
+}
+
+/* Button gets 30% width */
+.add-chapter-container .btn-add {
+  flex: 3; /* This represents roughly 30% */
+  margin-top: 0; /* Override previous margins */
+  background: var(--done); /* Uses your emerald green */
+  color: white;
+  padding: 12px 5px; /* Slightly tighter padding for small screens */
+  white-space: nowrap; /* Prevents text from wrapping */
+}
+
