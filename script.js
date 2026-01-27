@@ -7,8 +7,26 @@ if (versionElement) {
 
 /* ---------- SYLLABUS DATA ---------- */
 const syllabus = {
-    "Arithmetic": ["Number System", "Percentage", "Ratio & Proportion", "Profit & Loss", "Simple Interest", "Compound Interest", "Speed, Time & Distance", "Time & Work", "Averages", "Mensuration", "Partnership & Mixtures"],
-    "Reasoning": ["Series (Number & Letter)", "Analogies", "Classification", "Coding-Decoding", "Directions", "Blood Relation", "Seating Arrangement", "Syllogism"],
+    "Arithmetic": ["Number System",
+                   "Percentage",
+                   "Ratio & Proportion",
+                   "Profit & Loss",
+                   "Simple Interest",
+                   "Compound Interest",
+                   "Speed, Time & Distance",
+                   "Time & Work",
+                   "Averages",
+                   "Mensuration",
+                   "Partnership & Mixtures"
+                  ],
+    "Reasoning": ["Series (Number & Letter)",
+                  "Analogies",
+                  "Classification",
+                  "Coding-Decoding",
+                  "Directions",
+                  "Blood Relation",
+                  "Seating Arrangement",
+                  "Syllogism"],
     "Data Interpretation": ["Tables", "Bar Graphs", "Pie Charts", "Line Graphs", "Data Sufficiency"],
     "Computer": ["MS Office (Word, Excel, PPT)", "OS & Software Basics", "Internet & Networking", "Keyboard Shortcuts"],
     "Current Affairs": ["October CA", "November CA", "December CA", "January CA"],
@@ -171,7 +189,7 @@ if ('serviceWorker' in navigator) {
                 const newWorker = reg.installing;
                 newWorker.onstatechange = () => {
                     if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
-                        alert("New update available! Please refresh.");
+                        alert("🔔 New update available! Please refresh.");
                         location.reload();
                     }
                 };
