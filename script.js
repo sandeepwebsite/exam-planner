@@ -22,6 +22,8 @@ const timeSlots = [
     { start: "19:00", end: "20:00" }, { start: "20:00", end: "21:00" }
 ];
 
+const subjectSelect = document.getElementById("subjectSelect");
+
 /* ---------- INITIALIZATION ---------- */
 Object.keys(syllabus).forEach(sub => {
     if (!data[sub]) {
@@ -186,6 +188,43 @@ function generateTodayPlan() {
     localStorage.todayPlan = JSON.stringify(planToday);
     localStorage.todayPlanDate = today;
     renderTodayPlan();
+}
+
+// New Chapter Button
+
+function addChapter() {
+    const s = subjectSelect.value;
+    const input = document.getElementById("newChapterInput");
+    const chapterName = input.value.trim();
+
+    // 1. Validation
+    if (!s || s === "") {
+        alert("⚠️ Please select a subject from the dropdown first!");
+        return;
+    }
+    if (!chapterName) {
+        alert("⚠️ Please enter a chapter name!");
+        return;
+    }
+
+    // 2. Ensure the subject exists in our data object
+    if (!data[s]) {
+        data[s] = [];
+    }
+
+    // 3. Add the new chapter object
+    data[s].push({
+        name: chapterName,
+        rev: 0,
+        last: null,
+        done: false
+    });
+
+    // 4. Save and Update UI
+    save();
+    input.value = ""; // Clear the input box
+    render(); // Refresh the list to show the new chapter
+    alert(`✅ Added "${chapterName}" to ${s}`);
 }
 
 function updateOverallSummary() {
