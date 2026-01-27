@@ -1,4 +1,4 @@
-const CACHE_NAME = 'cgl-v2'; // Increment this (v1 -> v2) to update
+const CACHE_NAME = 'cgl-v3'; // Increment this (v1 -> v2) to update
 const ASSETS = [
   './',
   './index.html',
