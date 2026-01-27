@@ -473,6 +473,38 @@ function renderStudySlider(){
   });
 }
 
+function handleMidnightRollover(){
+  const now = new Date();
+  const today = now.toDateString();
+
+  // If date changed
+  if (localStorage.studyDate !== today) {
+
+    // 1. Save yesterday's final study time
+    saveDailyStudy();
+
+    // 2. Reset timer for new day
+    localStorage.studyDate = today;
+    localStorage.totalStudyMs = 0;
+    localStorage.studyStart = "";
+
+    totalStudyMs = 0;
+    studyStart = null;
+
+    // 3. UI reset
+    const status = document.getElementById("studyStatus");
+    if (status) {
+      status.textContent = "Paused";
+      status.style.color = "var(--pending)";
+    }
+
+    updateStudyTimeUI();
+    renderStudySlider();
+  }
+}
+setInterval(handleMidnightRollover, 60000);
+
+
 
 
 
