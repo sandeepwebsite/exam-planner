@@ -1,45 +1,31 @@
-const APP_VERSION = '1.0.1';
-const CACHE_NAME = 'cgl-planner-v2';
-
+const CACHE_NAME = 'cgl-v2'; // Increment this (v1 -> v2) to update
 const ASSETS = [
+  './',
   './index.html',
+  './style.css',
+  './script.js',
   './manifest.json',
-  './sw.js',
-  './image/logo.png',
-  './style.css', // add your CSS
-  './script.js' // add your JS
+  './image/logo.png'
 ];
 
-// Install event: cache assets
-self.addEventListener('install', e => {
+self.addEventListener('install', (e) => {
   e.waitUntil(
-    caches.open(CACHE_NAME).then(cache => cache.addAll(ASSETS))
+    caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS))
   );
-  self.skipWaiting(); // Activate immediately
+  self.skipWaiting(); // Force the new service worker to become active
 });
 
-// Activate event: delete old caches
-self.addEventListener('activate', e => {
+self.addEventListener('activate', (e) => {
   e.waitUntil(
-    caches.keys().then(keys =>
-      Promise.all(
-        keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))
-      )
-    )
+    caches.keys().then((keys) => {
+      return Promise.all(
+        keys.filter((key) => key !== CACHE_NAME).map((key) => caches.delete(key))
+      );
+    })
   );
-  self.clients.claim(); // Take control immediately
+  self.clients.claim(); // Take control of the page immediately
 });
 
-// Fetch: serve from cache if offline
-self.addEventListener('fetch', e => {
-  e.respondWith(
-    caches.match(e.request).then(res => res || fetch(e.request))
-  );
-});
-
-// Listen for message to force update
-self.addEventListener('message', event => {
-  if (event.data && event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting();
-  }
+self.addEventListener('fetch', (e) => {
+  e.respondWith(caches.match(e.request).then((res) => res || fetch(e.request)));
 });
