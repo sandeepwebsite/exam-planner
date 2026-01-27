@@ -371,6 +371,112 @@ function updateOverallSummary() {
     document.getElementById("overallPending").innerText = `⏳ Pending: ${total - done}`;
 }
 
+
+let studyStart = null;
+let totalStudyMs = 0;
+
+const todayDate = new Date().toDateString();
+
+if (localStorage.studyDate !== todayDate) {
+  localStorage.studyDate = todayDate;
+  localStorage.totalStudyMs = 0;
+  localStorage.studyStart = "";
+}
+
+totalStudyMs = Number(localStorage.totalStudyMs || 0);
+studyStart = localStorage.studyStart ? Number(localStorage.studyStart) : null;
+
+function startStudy(){
+  if(studyStart) return; // already studying
+
+  studyStart = Date.now();
+  localStorage.studyStart = studyStart;
+
+  document.getElementById("studyStatus").textContent = "Studying";
+  document.getElementById("studyStatus").style.color = "var(--done)";
+}
+
+function takeBreak(){
+  if(!studyStart) return;
+
+  totalStudyMs += Date.now() - studyStart;
+  studyStart = null;
+
+  localStorage.totalStudyMs = totalStudyMs;
+  localStorage.studyStart = "";
+
+  document.getElementById("studyStatus").textContent = "Paused";
+  document.getElementById("studyStatus").style.color = "var(--pending)";
+
+  updateStudyTimeUI();
+}
+
+function updateStudyTimeUI(){
+  let ms = totalStudyMs;
+
+  if(studyStart){
+    ms += Date.now() - studyStart;
+  }
+
+  const mins = Math.floor(ms / 60000);
+  const hrs = Math.floor(mins / 60);
+
+  document.getElementById("studyTime").textContent =
+    `${hrs}h ${mins % 60}m`;
+}
+setInterval(updateStudyTimeUI, 30000);
+updateStudyTimeUI();
+
+function saveDailyStudy(){
+  const key = "dailyStudyHours";
+  let history = JSON.parse(localStorage.getItem(key) || "{}");
+
+  let ms = totalStudyMs;
+  if(studyStart){
+    ms += Date.now() - studyStart;
+  }
+
+  history[todayDate] = ms;
+
+  // Keep only last 30 days
+  const dates = Object.keys(history).sort(
+    (a,b)=>new Date(a)-new Date(b)
+  );
+  while(dates.length > 30){
+    delete history[dates.shift()];
+  }
+
+  localStorage.setItem(key, JSON.stringify(history));
+}
+
+
+function renderStudySlider(){
+  const slider = document.getElementById("studySlider");
+  if(!slider) return;
+
+  let history = JSON.parse(localStorage.getItem("dailyStudyHours") || "{}");
+  slider.innerHTML = "";
+
+  Object.keys(history).sort(
+    (a,b)=>new Date(a)-new Date(b)
+  ).forEach(date=>{
+    const ms = history[date];
+    const mins = Math.floor(ms/60000);
+    const hrs = Math.floor(mins/60);
+
+    slider.innerHTML += `
+      <div class="study-day ${date===todayDate?'today':''}">
+        <div>${new Date(date).toLocaleDateString("en-IN",{day:'numeric',month:'short'})}</div>
+        <div class="study-hours">${hrs}h ${mins%60}m</div>
+      </div>
+    `;
+  });
+}
+
+
+
+
+
 /* ---------- SERVICE WORKER AUTO-UPDATE ---------- */
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', async () => {
