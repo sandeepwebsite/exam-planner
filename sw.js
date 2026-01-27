@@ -1,4 +1,7 @@
-const CACHE_NAME = 'cgl-v5'; // Increment this (v1 -> v2) to update
+importScripts('./version.json');
+
+const CACHE_NAME = `cgl-${version}-${build}`;
+
 const ASSETS = [
   './',
   './index.html',
