@@ -29,7 +29,33 @@ Object.keys(syllabus).forEach(sub => {
     }
 });
 save();
+function resetProgress() {
+    // 1. Ask for confirmation
+    if (!confirm("⚠️ Are you sure you want to reset all progress? This cannot be undone.")) return;
 
+    // 2. Clear the master data object
+    Object.keys(data).forEach(sub => {
+        if (Array.isArray(data[sub])) {
+            data[sub].forEach(ch => {
+                ch.done = false;
+                ch.rev = 0;
+                ch.last = null;
+            });
+        }
+    });
+
+    // 3. Clear the daily plan and storage keys
+    localStorage.removeItem("todayPlan");
+    localStorage.removeItem("todayPlanDate");
+    localStorage.removeItem("examDate"); // Optional: remove if you want to reset the date too
+    
+    // 4. Save the empty state
+    save();
+
+    // 5. Force a refresh to show the clean state
+    alert("🔄 Progress has been reset.");
+    location.reload(); 
+}
 /* ---------- EXAM COUNTDOWN ---------- */
 const examDate = document.getElementById("examDate");
 const countdown = document.getElementById("countdown");
