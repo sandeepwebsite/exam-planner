@@ -1,6 +1,7 @@
 importScripts('./version.js');
 
-const CACHE_NAME = `cgl-${self.registration.scope}-${Date.now()}`;
+document.getElementById('appVersion').textContent =
+  `Version: ${APP_VERSION}`;
 
 
 const ASSETS = [
