@@ -75,10 +75,13 @@
 
 
   <!-- Add new chapter -->
-  <div style="margin-top:10px;">
-    <input type="text" id="newChapterInput" placeholder="➕ Add new chapter">
-    <button onclick="addChapter()" style="margin-top:5px;background:#22c55e;color:white;">Add Chapter</button>
+  <div class="card">
+  <label>➕ Add Custom Chapter</label>
+  <div class="add-chapter-container">
+    <input type="text" id="newChapterInput" placeholder="Chapter name...">
+    <button onclick="addChapter()" class="btn-add">Add</button>
   </div>
+</div>
 
   <div class="stats">
     <div class="stat pending">Pending: <span id="pCount">0</span></div>
@@ -95,5 +98,6 @@
   <script src="script.js"></script>
 </body>
 </html>
+
 
 
