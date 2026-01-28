@@ -15,133 +15,120 @@
 
 <body>
 
-<h1>📘 Study Planner</h1>
-
-<!-- EXAM DATE -->
-<div class="card">
-<label>🎯 Exam Date</label>
-<input type="date" id="examDate">
-<div id="countdown" class="countdown"></div>
-</div>
-
-<!-- Today Study Time -->
-<div class="card summary-box">
-  <h3>⏱️ Today Study Time</h3>
-
-  <div class="summary-row">
-    <span id="studyTime">0h 0m</span>
-    <span id="studyStatus" style="color:var(--pending)">Paused</span>
-  </div>
-
-  <div style="display:flex; gap:10px; margin-top:12px;">
-    <button onclick="startStudy()">▶ Start Study</button>
-    <button onclick="takeBreak()" class="btn-status-pending">⏸ Break</button>
-  </div>
-</div>
-
-<div class="card">
-  <h3>📊 Daily Study Hours</h3>
-  <div id="studySlider" class="study-slider"></div>
-</div>
-
-
-<!-- OVERALL SUMMARY -->
-<div id="overallSummary" class="summary-box">
-  <h3>📚 Overall Progress</h3>
-  <span id="overallCompleted" onclick="showCompletedModal()" style="cursor:pointer; border: solid 0.5px var(--done); color: var(--done);padding: 3px;">✔ Completed: 0 (0%)</span>
-    <span id="overallPending" onclick="showPendingModal()" style="cursor:pointer; border: solid 0.5px var(--pending); color: var(--pending);padding: 3px;">⏳ Pending: 0</span>
-      <div id="pendingModal" class="modal">
-      <div class="modal-content card">
-        <div class="modal-header">
-          <h2 id="modalTitle">📚 All Pending Chapters</h2>
-          <span class="close-modal" onclick="closeModal()">&times;</span>
-        </div>
-        <div id="modalList" class="modal-body"></div>
-      </div>
+    <div class="tab-bar">
+        <button class="tab-btn active" onclick="openTab('home')">🏠 Home</button>
+        <button class="tab-btn" onclick="openTab('plan')">📅 Plan</button>
+        <button class="tab-btn" onclick="openTab('syllabus')">📚 Syllabus</button>
     </div>
-  <button onclick="resetProgress()" style="margin-top:10px;background:#ef4444;color:white;">🔄 Reset Progress</button>
-  </div>
-</div>
 
-<div id="dailyWarning" class="warning-box" style="display:none;">
-  ⚠️ Today study plan is not completed yet!
-</div>
+    <h1>📘 Study Planner</h1>
 
-<!-- TODAY SCHEDULE -->
-<div class="card">
-<h3>🕒 Today Study Schedule</h3>
+    <div id="home" class="tab-content active">
+        <div class="card">
+            <label>🎯 Exam Countdown</label>
+            <input type="date" id="examDate">
+            <div id="countdown" class="countdown"></div>
+        </div>
 
-<table>
-<thead>
-<tr>
-<th>Sl</th>
-<th>Subject</th>
-<th>Chapter</th>
-<th>Time</th>
-<th>Done</th>
-</tr>
-</thead>
-<tbody id="todayBody"></tbody>
-</table>
+        <div class="card summary-box">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h3>⏱️ Today Study Time</h3>
+                <div id="goalText">0% of 8h Goal</div>
+            </div>
+            <div class="goal-container">
+                <div id="goalBar"></div>
+            </div>
+            <div class="summary-row" style="margin-top: 15px;">
+                <span id="studyTime">0h 0m</span>
+                <span id="studyStatus">Paused</span>
+            </div>
+            <div style="display:flex; gap:10px; margin-top:12px;">
+                <button id="startBtn" onclick="startStudy()">▶ Start</button>
+                <button id="breakBtn" onclick="takeBreak()" class="btn-status-pending">⏸ Break</button>
+            </div>
+        </div>
 
-<div class="stats">
-<div class="stat completed">Completed Today: <span id="tDone">0</span></div>
-<div class="stat pending">Pending Today: <span id="tPending">0</span></div>
-</div>
-</div>
+        <div class="card">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h3>📊 Study History</h3>
+                <div style="text-align: right;">
+                    <small style="color: var(--text-dim);">Last 7 Days:</small>
+                    <div id="weeklyTotal" style="color: var(--done); font-weight: 800;">0h 0m</div>
+                </div>
+            </div>
+            <div id="studySlider" class="study-slider"></div>
+        </div>
+    </div>
 
-<!-- SUBJECT -->
-<div class="card">
-  <select id="subjectSelect">
-  <option value="">-- Select Subject --</option>
-  <option>Arithmetic</option>
-  <option>Reasoning</option>
-  <option>Data Interpretation</option>
-  <option>Computer</option>
-  <option>Current Affairs</option>
-  <!-- <option>Odisha GK</option> -->
-    <option>Odisha History</option>
-    <option>Odisha Geography</option>
-    <option>Odisha Polity</option>
-    <option>Odisha Economy</option>
-    <option>Odisha Static GK</option>
-</select>
+    <div id="plan" class="tab-content">
+        <div class="card">
+            <h3>🕒 Today Study Schedule</h3>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Sl</th><th>Subject</th><th>Chapter</th><th>Done</th></tr>
+                    </thead>
+                    <tbody id="todayBody"></tbody>
+                </table>
+            </div>
+            <div class="stats">
+                <div class="stat completed">Done: <span id="tDone">0</span></div>
+                <div class="stat pending">Left: <span id="tPending">0</span></div>
+            </div>
+        </div>
+    </div>
 
+    <div id="syllabus" class="tab-content">
+        <div id="overallSummary" class="card summary-box">
+            <h3>📊 Overall Progress</h3>
+            <div class="summary-row">
+                <span id="overallCompleted" onclick="showCompletedModal()">✔ Done</span>
+                <span id="overallPending" onclick="showPendingModal()">⏳ Pending</span>
+            </div>
+        </div>
 
-  <!-- Add new chapter -->
-  <div class="card">
-  <label>➕ Add Custom Chapter</label>
-  <div class="add-chapter-container">
-    <input type="text" id="newChapterInput" placeholder="Chapter name...">
-    <button onclick="addChapter()" class="btn-add">Add</button>
-  </div>
-</div>
+        <div class="card">
+            <label>Select Subject</label>
+            <select id="subjectSelect">
+                <option value="">-- Choose --</option>
+                <option>Arithmetic</option>
+                <option>Reasoning</option>
+                <option>Data Interpretation</option>
+                <option>Computer</option>
+                <option>Odisha History</option>
+                <option>Odisha Geography</option>
+                <option>Odisha Polity</option>
+                <option>Odisha Economy</option>
+                <option>Odisha Static GK</option>
+            </select>
+            
+            <label style="margin-top:15px;">➕ Add Custom Chapter</label>
+            <div class="add-chapter-container">
+                <input type="text" id="newChapterInput" placeholder="Name...">
+                <button onclick="addChapter()" class="btn-add">Add</button>
+            </div>
+        </div>
+        <div id="chapterList"></div>
+        <button onclick="resetProgress()" class="btn-reset">🔄 Reset All Progress</button>
+    </div>
 
-  <div class="stats">
-    <div class="stat pending">Pending: <span id="pCount">0</span></div>
-    <div class="stat completed">Completed: <span id="cCount">0</span></div>
-  </div>
-</div>
+    <div id="appVersion">Version: 1.2.0</div>
 
+    <div id="pendingModal" class="modal">
+        <div class="modal-content card">
+            <div class="modal-header">
+                <h2 id="modalTitle">Details</h2>
+                <span class="close-modal" onclick="closeModal()">&times;</span>
+            </div>
+            <div id="modalList" class="modal-body"></div>
+        </div>
+    </div>
 
-<div id="chapterList"></div>
+    <div id="update-toast">
+        <span style="font-size: 0.9rem;">✨ New version available!</span>
+        <button onclick="window.location.reload()">Update</button>
+    </div>
 
-  <div id="appVersion" style="text-align:center;font-size:12px;margin-top:10px;color:#38bdf8;">
-  Version: 1.0.0
-</div>
-  <script type="module" src="./script.js"></script>
+    <script type="module" src="./script.js"></script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
