@@ -627,32 +627,74 @@ setInterval(handleMidnightRollover, 60000);
 
 
 function openTab(tabId) {
-    // 1. Hide all tab content
+    // 1. Hide all contents
     const contents = document.getElementsByClassName("tab-content");
-    for (let content of contents) {
-        content.classList.remove("active");
-    }
+    for (let content of contents) content.classList.remove("active");
 
-    // 2. Remove active class from all buttons
+    // 2. Reset all buttons
     const buttons = document.getElementsByClassName("tab-btn");
-    for (let btn of buttons) {
-        btn.classList.remove("active");
-    }
+    for (let btn of buttons) btn.classList.remove("active");
 
-    // 3. Show current tab and set button to active
-    document.getElementById(tabId).classList.add("active");
-    event.currentTarget.classList.add("active");
+    // 3. Show target tab
+    const targetTab = document.getElementById(tabId);
+    if (targetTab) targetTab.classList.add("active");
 
-    // 4. Save the last open tab (Optional)
+    // 4. Highlight target button
+    // Find the button that has the onclick matching the tabId
+    const targetBtn = Array.from(buttons).find(btn => btn.getAttribute('onclick').includes(tabId));
+    if (targetBtn) targetBtn.classList.add("active");
+
+    // Save state
     localStorage.setItem("lastTab", tabId);
+    
+    // Optional: Scroll to top on tab change
+    window.scrollTo(0, 0);
 }
+
+window.openTab = openTab;
 
 // Ensure the tab function is accessible
 window.openTab = openTab;
 
 // Optional: Auto-open last used tab on load
 const lastTab = localStorage.getItem("lastTab") || 'home';
-// To trigger this, you might need a small logic check in your init block
+
+/* ---------- SWIPE GESTURES FOR TABS ---------- */
+let touchstartX = 0;
+let touchendX = 0;
+
+// Define your tabs in order
+const tabOrder = ['home', 'plan', 'syllabus'];
+
+function handleGesture() {
+    const swipeThreshold = 70; // Minimum distance for a swipe
+    const diff = touchstartX - touchendX;
+    
+    // Get current active tab index
+    const activeTab = document.querySelector('.tab-content.active').id;
+    let currentIndex = tabOrder.indexOf(activeTab);
+
+    if (Math.abs(diff) > swipeThreshold) {
+        if (diff > 0 && currentIndex < tabOrder.length - 1) {
+            // Swipe Left -> Go Right
+            openTab(tabOrder[currentIndex + 1]);
+        } else if (diff < 0 && currentIndex > 0) {
+            // Swipe Right -> Go Left
+            openTab(tabOrder[currentIndex - 1]);
+        }
+    }
+}
+
+// Attach listeners to the body
+document.addEventListener('touchstart', e => {
+    touchstartX = e.changedTouches[0].screenX;
+}, {passive: true});
+
+document.addEventListener('touchend', e => {
+    touchendX = e.changedTouches[0].screenX;
+    handleGesture();
+}, {passive: true});
+
 
 
 /* ---------- SERVICE WORKER AUTO-UPDATE ---------- */
@@ -660,24 +702,19 @@ if ('serviceWorker' in navigator) {
     window.addEventListener('load', async () => {
         const reg = await navigator.serviceWorker.register('./sw.js');
 
-        // Check for updates on a regular interval (every 30 mins)
-        setInterval(() => { reg.update(); }, 1000 * 60 * 30);
-
+        // This listener ensures we only show the toast if there is an actual 
+        // existing version being replaced.
         reg.addEventListener('updatefound', () => {
             const newWorker = reg.installing;
             newWorker.addEventListener('statechange', () => {
-                // If a new service worker is installed and waiting
+                // IMPORTANT: Check for 'navigator.serviceWorker.controller'
+                // If it's null, this is the first time the app is being installed.
                 if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
                     const toast = document.getElementById('update-toast');
                     if (toast) toast.classList.add('show');
                 }
             });
         });
-    });
-
-    // Reload all tabs once the new SW takes control
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-        window.location.reload();
     });
 }
 
