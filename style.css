@@ -534,11 +534,15 @@ button:disabled {
     align-items: center;
     gap: 15px;
     z-index: 9999;
+    visibility: hidden;
+    opacity: 0;
     transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 #update-toast.show {
     transform: translateX(-50%) translateY(0);
+    visibility: visible;
+    opacity: 1;
 }
 
 #update-toast button {
@@ -548,4 +552,25 @@ button:disabled {
     font-size: 0.8rem;
     background: var(--accent);
     color: var(--bg);
+}
+
+
+
+/*--------Swip to slide Tab--------*/
+
+/* --- SLIDE ANIMATION --- */
+.tab-content.active {
+    display: block;
+    animation: slideIn 0.25s ease-out;
+}
+
+@keyframes slideIn {
+    from { 
+        opacity: 0; 
+        transform: translateX(20px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateX(0); 
+    }
 }
