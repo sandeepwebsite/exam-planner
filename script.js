@@ -68,6 +68,26 @@ const timeSlots = [
     { start: "19:00", end: "20:00" }, { start: "20:00", end: "21:00" }
 ];
 
+/* ---------- CORE DATA INITIALIZATION ---------- */
+// 1. Get the current date to check for resets
+const todayDate = new Date().toDateString();
+
+// 2. Initialize Study Data from LocalStorage
+// totalStudyMs tracks how much you studied TODAY before the current session
+let totalStudyMs = Number(localStorage.getItem("totalStudyMs") || 0);
+
+// 3. studyStart tracks the timestamp when you hit "Start"
+let studyStart = localStorage.getItem("studyStart") ? Number(localStorage.getItem("studyStart")) : null;
+
+// 4. Ensure the stored date matches today
+if (localStorage.getItem("studyDate") !== todayDate) {
+    localStorage.setItem("studyDate", todayDate);
+    localStorage.setItem("totalStudyMs", "0");
+    localStorage.setItem("studyStart", "");
+    totalStudyMs = 0;
+    studyStart = null;
+}
+
 const subjectSelect = document.getElementById("subjectSelect");
 
 /* ---------- INITIALIZATION ---------- */
@@ -111,10 +131,12 @@ examDate.value = localStorage.getItem("examDate") || "";
 examDate.onchange = () => localStorage.setItem("examDate", examDate.value);
 
 setInterval(() => {
-    if (!examDate.value) { countdown.textContent = "Set exam date"; return; }
+    const countdownEl = document.getElementById("countdown");
+    if (!examDate.value || !countdownEl) return; // Exit if element is missing
+
     const d = Math.floor((new Date(examDate.value) - new Date()) / 86400000);
-    countdown.textContent = d <= 0 ? "🎉 Exam Day" : `⏳ ${d} Days Left`;
-    countdown.className = "countdown" + (d <= 7 ? " danger" : "");
+    countdownEl.textContent = d <= 0 ? "🎉 Exam Day" : `⏳ ${d} Days Left`;
+    countdownEl.className = "countdown" + (d <= 7 ? " danger" : "");
 }, 1000);
 
 
@@ -377,177 +399,223 @@ function updateOverallSummary() {
 }
 
 
-let studyStart = null;
-let totalStudyMs = 0;
+/* ---------- SETTINGS & CONSTANTS ---------- */
+const DAILY_GOAL_MS = 8 * 60 * 60 * 1000; // 8 Hours Goal
 
-const todayDate = new Date().toDateString();
+/* ---------- STUDY TIMER CORE ---------- */
 
-if (localStorage.studyDate !== todayDate) {
-  localStorage.studyDate = todayDate;
-  localStorage.totalStudyMs = 0;
-  localStorage.studyStart = "";
+function updateDailyGoalProgress() {
+    const progressBar = document.getElementById("goalBar");
+    const progressText = document.getElementById("goalText");
+    if (!progressBar || !progressText) return;
+
+    let currentMs = totalStudyMs;
+    if (studyStart) {
+        currentMs += Date.now() - studyStart;
+    }
+
+    const percentage = Math.min((currentMs / DAILY_GOAL_MS) * 100, 100).toFixed(1);
+    
+    progressBar.style.width = percentage + "%";
+    progressText.textContent = `${percentage}% of 8h Goal`;
+
+    // Trigger Neon Glow Class
+    if (percentage >= 100) {
+        progressBar.classList.add("completed");
+    } else {
+        progressBar.classList.remove("completed");
+    }
 }
 
-totalStudyMs = Number(localStorage.totalStudyMs || 0);
-studyStart = localStorage.studyStart ? Number(localStorage.studyStart) : null;
+/* ---------- THE MISSING TIMER UI FUNCTION ---------- */
+function updateStudyTimeUI() {
+    let ms = totalStudyMs;
 
-function startStudy(){
-  if(studyStart) return; // already studying
+    // If currently studying, add the time passed since pressing Start
+    if (studyStart) {
+        ms += Date.now() - studyStart;
+    }
 
-  studyStart = Date.now();
-  localStorage.studyStart = studyStart;
+    const totalMins = Math.floor(ms / 60000);
+    const hrs = Math.floor(totalMins / 60);
+    const mins = totalMins % 60;
 
-  document.getElementById("studyStatus").textContent = "Studying";
-  document.getElementById("studyStatus").style.color = "var(--done)";
+    const timeDisplay = document.getElementById("studyTime");
+    if (timeDisplay) {
+        timeDisplay.textContent = `${hrs}h ${mins}m`;
+    }
 }
 
-function takeBreak(){
-  if (!studyStart) return;
-
-  totalStudyMs += Date.now() - studyStart;
-  studyStart = null;
-
-  localStorage.totalStudyMs = totalStudyMs;
-  localStorage.studyStart = "";
-
-  const s = document.getElementById("studyStatus");
-  if (s) {
-    s.textContent = "Paused";
-    s.style.color = "var(--pending)";
-  }
-
-  updateStudyTimeUI();
-  updateStudyButtons();
-}
-
-
-function updateStudyTimeUI(){
-  let ms = totalStudyMs;
-
-  if(studyStart){
-    ms += Date.now() - studyStart;
-  }
-
-  const mins = Math.floor(ms / 60000);
-  const hrs = Math.floor(mins / 60);
-
-  document.getElementById("studyTime").textContent =
-    `${hrs}h ${mins % 60}m`;
-}
-setInterval(updateStudyTimeUI, 30000);
-updateStudyTimeUI();
-
-function saveDailyStudy(){
-  const key = "dailyStudyHours";
-  let history = JSON.parse(localStorage.getItem(key) || "{}");
-
-  let ms = totalStudyMs;
-  if(studyStart){
-    ms += Date.now() - studyStart;
-  }
-
-  history[todayDate] = ms;
-
-  // Keep only last 30 days
-  const dates = Object.keys(history).sort(
-    (a,b)=>new Date(a)-new Date(b)
-  );
-  while(dates.length > 30){
-    delete history[dates.shift()];
-  }
-
-  localStorage.setItem(key, JSON.stringify(history));
-}
-
-
-function renderStudySlider(){
-  const slider = document.getElementById("studySlider");
-  if(!slider) return;
-
-  let history = JSON.parse(localStorage.getItem("dailyStudyHours") || "{}");
-  slider.innerHTML = "";
-
-  Object.keys(history).sort(
-    (a,b)=>new Date(a)-new Date(b)
-  ).forEach(date=>{
-    const ms = history[date];
-    const mins = Math.floor(ms/60000);
-    const hrs = Math.floor(mins/60);
-
-    slider.innerHTML += `
-      <div class="study-day ${date===todayDate?'today':''}">
-        <div>${new Date(date).toLocaleDateString("en-IN",{day:'numeric',month:'short'})}</div>
-        <div class="study-hours">${hrs}h ${mins%60}m</div>
-      </div>
-    `;
-  });
-}
-
-function handleMidnightRollover(){
-  const now = new Date();
-  const today = now.toDateString();
-
-  // If date changed
-  if (localStorage.studyDate !== today) {
-
-    // 1. Save yesterday's final study time
-    saveDailyStudy();
-
-    // 2. Reset timer for new day
-    localStorage.studyDate = today;
-    localStorage.totalStudyMs = 0;
-    localStorage.studyStart = "";
-
-    totalStudyMs = 0;
-    studyStart = null;
-
-    // 3. UI reset
+function startStudy() {
+    if (studyStart) return;
+    studyStart = Date.now();
+    localStorage.studyStart = studyStart;
+    
     const status = document.getElementById("studyStatus");
     if (status) {
-      status.textContent = "Paused";
-      status.style.color = "var(--pending)";
+        status.textContent = "Studying";
+        status.style.color = "var(--done)";
+    }
+    updateStudyButtons();
+}
+
+function takeBreak() {
+    if (!studyStart) return;
+
+    totalStudyMs += Date.now() - studyStart;
+    studyStart = null;
+
+    localStorage.totalStudyMs = totalStudyMs;
+    localStorage.studyStart = "";
+
+    saveDailyStudy(); 
+    renderStudySlider(); 
+
+    const s = document.getElementById("studyStatus");
+    if (s) {
+        s.textContent = "Paused";
+        s.style.color = "var(--pending)";
     }
 
     updateStudyTimeUI();
-    renderStudySlider();
-  }
+    updateStudyButtons();
+    updateDailyGoalProgress();
 }
 
-function restoreStudyState(){
-  const status = document.getElementById("studyStatus");
+/* ---------- DATA PERSISTENCE & HISTORY ---------- */
 
-  if (studyStart) {
-    if (status) {
-      status.textContent = "Studying";
-      status.style.color = "var(--done)";
+function saveDailyStudy() {
+    const history = JSON.parse(localStorage.getItem("dailyStudyHours") || "{}");
+    const today = new Date().toDateString();
+
+    let ms = totalStudyMs;
+    if (studyStart) ms += (Date.now() - studyStart);
+
+    history[today] = ms;
+    localStorage.setItem("dailyStudyHours", JSON.stringify(history));
+}
+
+function updateWeeklyTotal() {
+    const history = JSON.parse(localStorage.getItem("dailyStudyHours") || "{}");
+    let totalMs = 0;
+    const now = new Date();
+
+    for (let i = 0; i < 7; i++) {
+        const d = new Date();
+        d.setDate(now.getDate() - i);
+        const dateStr = d.toDateString();
+        if (history[dateStr]) totalMs += history[dateStr];
     }
-  } else {
-    if (status) {
-      status.textContent = "Paused";
-      status.style.color = "var(--pending)";
+
+    const totalMins = Math.floor(totalMs / 60000);
+    const hrs = Math.floor(totalMins / 60);
+    const mins = totalMins % 60;
+
+    const weeklyEl = document.getElementById("weeklyTotal");
+    if (weeklyEl) weeklyEl.textContent = `${hrs}h ${mins}m`;
+}
+
+function renderStudySlider() {
+    const slider = document.getElementById("studySlider");
+    if (!slider) return;
+
+    const history = JSON.parse(localStorage.getItem("dailyStudyHours") || "{}");
+    slider.innerHTML = "";
+
+    Object.keys(history).sort((a, b) => new Date(a) - new Date(b)).forEach(date => {
+        const ms = history[date];
+        const mins = Math.floor(ms / 60000);
+        const hrs = Math.floor(mins / 60);
+
+        slider.innerHTML += `
+            <div class="study-day ${date === new Date().toDateString() ? 'today' : ''}">
+                <div>${new Date(date).toLocaleDateString("en-IN", { day: 'numeric', month: 'short' })}</div>
+                <div class="study-hours">${hrs}h ${mins % 60}m</div>
+            </div>
+        `;
+    });
+    updateWeeklyTotal();
+}
+
+/* ---------- SYSTEM & INITIALIZATION ---------- */
+
+function handleMidnightRollover() {
+    const now = new Date();
+    const today = now.toDateString();
+    const lastDate = localStorage.getItem("studyDate");
+
+    if (lastDate && lastDate !== today) {
+        // Save previous day's data before resetting
+        saveDailyStudy(); 
+
+        localStorage.studyDate = today;
+        localStorage.totalStudyMs = 0;
+        localStorage.studyStart = "";
+
+        totalStudyMs = 0;
+        studyStart = null;
+
+        renderStudySlider();
+        updateStudyTimeUI();
+        updateDailyGoalProgress();
     }
-  }
-
-  updateStudyTimeUI();
-  updateStudyButtons();
 }
 
-function updateStudyButtons(){
-  const startBtn = document.getElementById("startBtn");
-  const breakBtn = document.getElementById("breakBtn");
+function restoreStudyState() {
+    const status = document.getElementById("studyStatus");
+    const startBtn = document.getElementById("startBtn");
+    const breakBtn = document.getElementById("breakBtn");
 
-  if (!startBtn || !breakBtn) return;
+    // If studyStart exists, the user was studying when they left
+    if (studyStart) {
+        if (status) {
+            status.textContent = "Studying";
+            status.style.color = "var(--done)";
+        }
+        if (startBtn) startBtn.disabled = true;
+        if (breakBtn) breakBtn.disabled = false;
+    } else {
+        if (status) {
+            status.textContent = "Paused";
+            status.style.color = "var(--pending)";
+        }
+        if (startBtn) startBtn.disabled = false;
+        if (breakBtn) breakBtn.disabled = true;
+    }
 
-  if (studyStart) {
-    // Studying mode
-    startBtn.disabled = true;
-    breakBtn.disabled = false;
-  } else {
-    // Paused mode
-    startBtn.disabled = false;
-    breakBtn.disabled = true;
-  }
+    // Refresh the UI numbers immediately
+    updateStudyTimeUI();
+    updateDailyGoalProgress();
 }
+
+// Global UI Updates
+setInterval(() => {
+    updateStudyTimeUI();
+    updateDailyGoalProgress();
+}, 1000);
+
+// Initialize everything
+handleMidnightRollover();
+setInterval(handleMidnightRollover, 60000);
+renderStudySlider();
+updateStudyTimeUI();
+updateDailyGoalProgress();
+
+function updateStudyButtons() {
+    const startBtn = document.getElementById("startBtn");
+    const breakBtn = document.getElementById("breakBtn");
+
+    if (!startBtn || !breakBtn) return;
+
+    if (studyStart) {
+        startBtn.disabled = true;
+        breakBtn.disabled = false;
+    } else {
+        startBtn.disabled = false;
+        breakBtn.disabled = true;
+    }
+}
+
 
 
 restoreStudyState();
@@ -558,22 +626,86 @@ setInterval(handleMidnightRollover, 60000);
 
 
 
+function openTab(tabId) {
+    // 1. Hide all tab content
+    const contents = document.getElementsByClassName("tab-content");
+    for (let content of contents) {
+        content.classList.remove("active");
+    }
 
+    // 2. Remove active class from all buttons
+    const buttons = document.getElementsByClassName("tab-btn");
+    for (let btn of buttons) {
+        btn.classList.remove("active");
+    }
+
+    // 3. Show current tab and set button to active
+    document.getElementById(tabId).classList.add("active");
+    event.currentTarget.classList.add("active");
+
+    // 4. Save the last open tab (Optional)
+    localStorage.setItem("lastTab", tabId);
+}
+
+// Ensure the tab function is accessible
+window.openTab = openTab;
+
+// Optional: Auto-open last used tab on load
+const lastTab = localStorage.getItem("lastTab") || 'home';
+// To trigger this, you might need a small logic check in your init block
 
 
 /* ---------- SERVICE WORKER AUTO-UPDATE ---------- */
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', async () => {
-    const reg = await navigator.serviceWorker.register('./sw.js');
+    window.addEventListener('load', async () => {
+        const reg = await navigator.serviceWorker.register('./sw.js');
 
-    navigator.serviceWorker.addEventListener('controllerchange', () => {
-      console.log('New version activated. Reloading...');
-      window.location.reload();
+        // Check for updates on a regular interval (every 30 mins)
+        setInterval(() => { reg.update(); }, 1000 * 60 * 30);
+
+        reg.addEventListener('updatefound', () => {
+            const newWorker = reg.installing;
+            newWorker.addEventListener('statechange', () => {
+                // If a new service worker is installed and waiting
+                if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                    const toast = document.getElementById('update-toast');
+                    if (toast) toast.classList.add('show');
+                }
+            });
+        });
     });
 
-    reg.update();
-  });
+    // Reload all tabs once the new SW takes control
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+        window.location.reload();
+    });
 }
+
+
+
+/* ---------- INITIALIZATION ---------- */
+
+// 1. First, define logic checks
+handleMidnightRollover();
+
+// 2. Second, restore the UI state from memory
+restoreStudyState(); 
+
+// 3. Third, render the visual history
+renderStudySlider();
+
+// 4. Finally, start the live update intervals
+setInterval(() => {
+    updateStudyTimeUI();
+    updateDailyGoalProgress();
+    handleMidnightRollover();
+}, 1000);
+
+// EXPOSE TO WINDOW (Important for type="module")
+window.startStudy = startStudy;
+window.takeBreak = takeBreak;
+window.restoreStudyState = restoreStudyState;
+
 
 // Initial calls
 subjectSelect.onchange = render;
@@ -590,6 +722,5 @@ window.completeToday = completeToday;
 window.addChapter = addChapter;
 window.startStudy = startStudy;
 window.takeBreak = takeBreak;
-
 
 
