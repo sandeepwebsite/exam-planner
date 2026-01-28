@@ -367,8 +367,11 @@ function updateOverallSummary() {
         done += data[sub].filter(ch => ch.done).length;
     });
     const pct = total ? Math.round((done / total) * 100) : 0;
-    document.getElementById("overallCompleted").innerText = `✔ Completed: ${done} (${pct}%)`;
-    document.getElementById("overallPending").innerText = `⏳ Pending: ${total - done}`;
+    document.getElementById("overallCompleted").innerText =
+        `✔ Completed: ${done} (${completedPct}%)`;
+
+    document.getElementById("overallPending").innerText =
+        `⏳ Pending: ${total - done} (${pendingPct}%)`;
 }
 
 
@@ -546,6 +549,7 @@ function updateStudyButtons(){
 
 
 restoreStudyState();
+renderStudySlider();
 
 
 setInterval(handleMidnightRollover, 60000);
