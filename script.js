@@ -366,7 +366,9 @@ function updateOverallSummary() {
         total += data[sub].length;
         done += data[sub].filter(ch => ch.done).length;
     });
-    const pct = total ? Math.round((done / total) * 100) : 0;
+    const completedPct = total ? Math.round((done / total) * 100) : 0;
+    const pendingPct = total ? 100 - completedPct : 0;
+
     document.getElementById("overallCompleted").innerText =
         `✔ Completed: ${done} (${completedPct}%)`;
 
