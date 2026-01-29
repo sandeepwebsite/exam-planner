@@ -612,4 +612,6 @@ button:disabled {
 .delete-icon:hover {
     color: #f44336;
 }
-
+@media (max-width: 480px){
+  float: right;
+}
