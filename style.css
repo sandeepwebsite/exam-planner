@@ -369,6 +369,32 @@ td:last-child { border-radius: 0 12px 12px 0; }
   color: white;
 }
 
+.chapter-stats {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 15px;
+    font-weight: 600;
+    color: var(--text-primary);
+    cursor: default;
+}
+
+.chapter-stats .stat-1 {
+    cursor: pointer; /* optional if you want clickable counts */
+    transition: color 0.2s ease;
+    border: solid 0.5px var(--done);
+    padding: 5px;
+    color: var(--done);
+
+}
+
+.chapter-stats .stat-2 {
+    cursor: pointer; /* optional if you want clickable counts */
+    transition: color 0.2s ease;
+    border: solid 0.5px var(--pending);
+    color: var(--pending);
+    padding: 5px;
+}
+
 .pending { background: var(--pending); box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2); }
 .completed { background: var(--done); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2); }
 
