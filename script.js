@@ -65,8 +65,17 @@ const timeSlots = [
     { start: "10:30", end: "12:00" }, { start: "12:00", end: "13:00" },
     { start: "14:30", end: "15:30" }, { start: "15:30", end: "16:30" },
     { start: "16:30", end: "17:30" }, { start: "17:30", end: "18:30" },
-    { start: "19:00", end: "20:00" }, { start: "20:00", end: "21:00" }
+    { start: "19:00", end: "21:00" }
 ];
+
+
+function to12Hour(time24) {
+    let [h, m] = time24.split(":").map(Number);
+    const ampm = h >= 12 ? "PM" : "AM";
+    h = h % 12 || 12;
+    return `${h}:${m.toString().padStart(2, "0")} ${ampm}`;
+}
+
 
 /* ---------- CORE DATA INITIALIZATION ---------- */
 // 1. Get the current date to check for resets
@@ -311,7 +320,7 @@ function renderTodayPlan() {
             <tr style="background:${isActive ? 'rgba(125, 211, 252, 0.15)' : 'transparent'}; border-left: 4px solid ${isActive ? '#7dd3fc' : 'transparent'}">
                 <td>${i + 1}</td>
                 <td>${p.subject}</td>
-                <td>${data[p.subject][p.index].name}</td>
+                <td>${data[p.subject]?.[p.index]?.name || p.subject}</td>
                 <td>${p.time}</td>
                 <td><input type="checkbox" ${p.done ? "checked" : ""} onchange="completeToday(${i})"></td>
             </tr>`;
@@ -338,8 +347,14 @@ function generateTodayPlan() {
         pool.push({ subject: sub, index: data[sub].indexOf(chapter) });
     });
     let planToday = pool.slice(0, timeSlots.length).map((p, i) => ({
-        ...p, time: `${timeSlots[i].start} – ${timeSlots[i].end}`, done: false
-    }));
+    ...p,
+    time: `${to12Hour(timeSlots[i].start)} – ${to12Hour(timeSlots[i].end)}`,
+    start24: timeSlots[i].start,
+    end24: timeSlots[i].end,
+    done: false
+}));
+
+
     localStorage.todayPlan = JSON.stringify(planToday);
     localStorage.todayPlanDate = today;
     renderTodayPlan();
@@ -544,20 +559,38 @@ function handleMidnightRollover() {
     const today = now.toDateString();
     const lastDate = localStorage.getItem("studyDate");
 
+    // Only run if the date has actually changed
     if (lastDate && lastDate !== today) {
-        // Save previous day's data before resetting
-        saveDailyStudy(); 
+        let history = JSON.parse(localStorage.getItem("dailyStudyHours") || "{}");
+        
+        // 1. If currently studying, calculate time spent BEFORE midnight
+        if (studyStart) {
+            const midnight = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0);
+            const timeBeforeMidnight = midnight - studyStart;
+            
+            // Save the pre-midnight chunk to the old date
+            history[lastDate] = (history[lastDate] || 0) + timeBeforeMidnight;
+            
+            // Update studyStart to EXACTLY midnight so the timer continues from 0 for today
+            studyStart = midnight.getTime();
+            localStorage.setItem("studyStart", studyStart);
+        } else {
+            // If not studying, just commit the final total for yesterday
+            history[lastDate] = Number(localStorage.totalStudyMs || 0);
+        }
 
-        localStorage.studyDate = today;
-        localStorage.totalStudyMs = 0;
-        localStorage.studyStart = "";
+        // 2. Save history and Reset daily counters
+        localStorage.setItem("dailyStudyHours", JSON.stringify(history));
+        localStorage.setItem("studyDate", today);
+        
+        // Reset the daily accumulator to 0 (the running studyStart handles the rest)
+        totalStudyMs = 0; 
+        localStorage.setItem("totalStudyMs", "0");
 
-        totalStudyMs = 0;
-        studyStart = null;
-
+        // 3. Refresh UI
         renderStudySlider();
-        updateStudyTimeUI();
         updateDailyGoalProgress();
+        console.log("🌙 Midnight rollover processed. Session continued.");
     }
 }
 
