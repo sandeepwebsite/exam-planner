@@ -286,16 +286,23 @@ function render() {
     let p = 0, c = 0;
 
     data[s].forEach((ch, i) => {
-        ch.done ? c++ : p++;
-        const btnClass = ch.done ? "btn-status-completed" : "btn-status-pending";
-        chapterList.innerHTML += `
-            <div class="chapter">
-                <div class="row"><b>${ch.name}</b><small>Rev: ${ch.rev}</small></div>
-                <div class="row">
-                    <button onclick="incRevision(${i})">🔁 Rev +</button>
-                    <button onclick="toggleChapter(${i})" class="${btnClass}">${ch.done ? "✔ Completed" : "⏳ Pending"}</button>
-                </div>
-            </div>`;
+    ch.done ? c++ : p++;
+    const btnClass = ch.done ? "btn-status-completed" : "btn-status-pending";
+
+    chapterList.innerHTML += `
+        <div class="chapter" style="position: relative; padding-right: 30px;">
+            <!-- Delete Icon Top-Right -->
+            <button onclick="deleteChapter(${i})" class="delete-icon" title="Delete Chapter">🗑</button>
+
+            <div class="row">
+                <b>${ch.name}</b>
+                <small>Rev: ${ch.rev}</small>
+            </div>
+            <div class="row" style="margin-top: 5px;">
+                <button onclick="incRevision(${i})">🔁 Rev +</button>
+                <button onclick="toggleChapter(${i})" class="${btnClass}">${ch.done ? "✔ Completed" : "⏳ Pending"}</button>
+            </div>
+        </div>`;
     });
     document.getElementById("pCount").textContent = p;
     document.getElementById("cCount").textContent = c;
@@ -396,6 +403,23 @@ function addChapter() {
     render(); // Refresh the list to show the new chapter
     alert(`✅ Added "${chapterName}" to ${s}`);
 }
+
+
+function deleteChapter(i) {
+    const s = subjectSelect.value;
+    if (!s || !data[s] || !data[s][i]) return;
+
+    const chapterName = data[s][i].name;
+    if (!confirm(`⚠️ Are you sure you want to delete "${chapterName}"? This cannot be undone.`)) return;
+
+    // Remove the chapter
+    data[s].splice(i, 1);
+    save();
+    render();
+    alert(`✅ "${chapterName}" has been deleted from ${s}`);
+}
+
+
 
 function updateOverallSummary() {
     let total = 0, done = 0;
