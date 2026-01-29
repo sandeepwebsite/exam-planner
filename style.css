@@ -247,10 +247,27 @@ select {
   transition: all 0.3s ease;
 }
 
+
 input:focus, select:focus {
   outline: none;
   border-color: var(--accent);
   box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+/* Make the calendar date text white */
+input[type="date"] {
+    color: #ffffff;          /* Pure white text for selected date */
+}
+
+/* Optional: placeholder text (if your browser shows it) */
+input[type="date"]::placeholder {
+    color: rgba(255, 255, 255, 0.6);  /* Slightly dimmed white for placeholder */
+}
+
+/* Optional: calendar icon visibility on dark background (Chrome/Safari) */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: brightness(100%) invert(1);
+    cursor: pointer;
 }
 
 
@@ -574,3 +591,25 @@ button:disabled {
         transform: translateX(0); 
     }
 }
+
+
+
+.delete-icon {
+    position: absolute;
+    width: 40px;
+    float: right;
+    top: 5px;
+    right: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5rem;
+    font-weight: bold;       /* Makes it stand out */
+    color: #b71c1c;          /* Dark red for visibility */
+    transition: color 0.2s;
+}
+
+.delete-icon:hover {
+    color: #f44336;
+}
+
